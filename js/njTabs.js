@@ -33,7 +33,7 @@ window.njTabs = function(opts) {
 	this._gatherData(this.v.tabsWrap);
 
 
-	this.v.contentWrap = $(o.content);
+	this.v.contentWrap = $(o.content).first();
 	if(!this.v.contentWrap.length) return;//don't do anything, if we have no container with content
 
 	this.v.tabEls = this.v.tabsWrap.find(o.tabSelector);
@@ -41,10 +41,10 @@ window.njTabs = function(opts) {
 
 
 	this.v.tabsWrap.delegate(o.trigger, o.triggerEvent, function (e) {
+		o.e = e;
 		that.setActive(e.target || e.srcElement);
 
-		e.preventDefault();
-		return false;
+		// e.preventDefault();
 	})
 
 	this.setActive(true);
@@ -86,10 +86,6 @@ njt.setActive = function (elem) {
 			return elem.closest(o.tabSelector);
 		}
 	}
-	
-	//set active class to active tab
-	this.v.tabEls.removeClass(o.tabClass);
-	tab.addClass(o.tabClass)
 
 	//find index of current tab, among other tabs
 	this.v.tabEls.each(function (i) {
@@ -101,12 +97,22 @@ njt.setActive = function (elem) {
 
 	//select proper tab content element
 	tabContent = $(this.v.contentEls[index]);
+	if(!tabContent.length) return;//if there is no tab content element, return
 
-	//show proper tab content element
+
+	if(o.e) o.e.preventDefault();
+
+
+	//set active class to active tab
+	this.v.tabEls.removeClass(o.tabClass);
+	tab.addClass(o.tabClass)
+
+	//set active class to content el
 	this.v.contentEls.removeClass(o.contentClass);
 	tabContent.addClass(o.contentClass);
 
 
+	//set instance in element
 	this.v.tabsWrap[0].njTabs = this;
 };
 
@@ -132,7 +138,7 @@ njt._gatherData = function (el) {
 
 njTabs.defaults = {
 	tabs:            '.njTabs',
-	// content:         '.njTabs-content',
+	content:         '.njTabs-content',
 
 	tabSelector:     'li',
 	contentSelector: 'div',
@@ -155,5 +161,5 @@ $(document).on('DOMContentLoaded', function () {
 			tabs: $(this)
 		})
 	})
-	
+
 })

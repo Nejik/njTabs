@@ -21,8 +21,7 @@
 
 	j.fn.init = function (selector) {
 		var query;
-
-		if(typeof selector === 'string') {
+		if(typeof selector === 'string' && selector.length > 0) {
 			//detect html input
 			if(selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">") {
 				(j.str2dom) ? query = j.str2dom(selector) : query = [];
