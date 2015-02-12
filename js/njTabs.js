@@ -25,16 +25,22 @@ window.njTabs = function(opts) {
 
 	var that = this;
 
-	this.v = {//object with cached variables
-		tabsWrap: $(o.tabs),
-		contentWrap: $(o.content)
-	}
+	this.v = {
+		tabsWrap: $(o.tabs)
+	};//object with cached variables
+
+	//gather option from data-attributes from element
+	this._gatherData(this.v.tabsWrap);
+
+
+	this.v.contentWrap = $(o.content);
+	if(!this.v.contentWrap.length) return;//don't do anything, if we have no container with content
 
 	this.v.tabEls = this.v.tabsWrap.find(o.tabSelector);
 	this.v.contentEls = this.v.contentWrap.find(o.contentSelector);
 
 
-	this.v.tabsWrap.delegate(o.triggerOn, o.triggerEvent, function (e) {
+	this.v.tabsWrap.delegate(o.trigger, o.triggerEvent, function (e) {
 		that.setActive(e.target || e.srcElement);
 
 		e.preventDefault();
@@ -42,11 +48,10 @@ window.njTabs = function(opts) {
 	})
 
 	this.setActive(true);
-	// this.setActive(2, true);
 };
 var njt = njTabs.prototype;
 
-njt.setActive = function (elem, first) {
+njt.setActive = function (elem) {
 	var o = this.o,
 		$elem = $(elem),
 		index,
@@ -105,6 +110,24 @@ njt.setActive = function (elem, first) {
 	this.v.tabsWrap[0].njTabs = this;
 };
 
+njt._gatherData = function (el) {
+	var o = this.o,
+		$el = $(el),
+		dataO = el.data(),//original data
+		dataMeta = {};
+
+	for (var p in dataO) {//use only data properties with njt prefix
+		if (dataO.hasOwnProperty(p) && /^njt[A-Z]+/.test(p) ) {
+			var shortName = p.match(/^njt(.*)/)[1],
+				shortNameLowerCase = shortName.charAt(0).toLowerCase() + shortName.slice(1);
+
+			dataMeta[shortNameLowerCase] = dataO[p];
+		}
+	}
+
+	this.o = $.extend(this.o, dataMeta);
+
+}
 
 
 njTabs.defaults = {
@@ -114,15 +137,23 @@ njTabs.defaults = {
 	tabSelector:     'li',
 	contentSelector: 'div',
 
-	triggerOn:       'li',
+	trigger:         'li',
 
 
 	triggerEvent:    'click',
 	tabClass:        'active',
-	contentClass:    'active',
-	
-	// activeClassTo:   null,//find closest element and set active class to it
-	tabActiveEl:     null,//(selector) selector of parent element, where we should add active tab class, and from this el we got tab index
-	// contentActive:   null
+	contentClass:    'active'
 }
 })(window, document);
+
+
+//autobind
+$(document).on('DOMContentLoaded', function () {
+
+	$(njTabs.defaults.tabs).each(function () {
+		new njTabs({
+			tabs: $(this)
+		})
+	})
+	
+})
