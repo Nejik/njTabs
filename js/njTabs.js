@@ -25,6 +25,7 @@ window.njTabs = function(opts) {
 
 	var that = this;
 
+
 	this.v = {
 		tabsWrap: $(o.tabs)
 	};//object with cached variables
@@ -34,6 +35,9 @@ window.njTabs = function(opts) {
 
 
 	this.v.contentWrap = $(o.content).first();
+	
+
+
 	if(!this.v.contentWrap.length) return;//don't do anything, if we have no container with content
 
 	if(o.makeRelative && this.v.contentWrap.css('position') == 'static') {
@@ -47,9 +51,10 @@ window.njTabs = function(opts) {
 
 	this.v.tabsWrap.delegate(o.trigger, o.triggerEvent, function (e) {
 		o.e = e;
-		that.setActive(e.target || e.srcElement);
+		var target = e.target || e.srcElement;
+		that.setActive(target);
 
-		if(!$(e.target || e.srcElement).hasClass('not-tab')) o.e.preventDefault();
+		if(!$(target).hasClass('not-tab')) o.e.preventDefault();
 	})
 
 
@@ -91,12 +96,14 @@ njt.setActive = function (elem) {
 
 
 	//detect tab element
-	if(typeof elem === 'number' && elem > 0) {//set active tab via zero-based index
+	if(typeof elem === 'number') {//set active tab via zero-based index
+
 		if(elem < 0) {
 			elem = 0;
 		} else if(elem > this.v.tabEls.length - 1) {
 			elem = this.v.tabEls.length - 1;
 		}
+
 		tab = $(this.v.tabEls[elem]);
 	} else if(elem === true) {
 		$elem = this.v.tabsWrap.find('.active');
@@ -104,6 +111,7 @@ njt.setActive = function (elem) {
 	} else {
 		tab = checkEl($elem);
 	}
+
 	if(!tab.length) tab = $(this.v.tabEls[0])//something goes wrong and we can't detect active tab, select first tab as active
 
 	function checkEl(elem) {
@@ -124,7 +132,7 @@ njt.setActive = function (elem) {
 
 	//select proper tab content element
 	tabContent = $(this.v.contentEls[index]);
-	if(!tabContent.length) return;//if there is no tab content element, return
+	// if(!tabContent.length) return;//if there is no tab content element, return
 
 	if(this.active === index) return;//don't change slide if it is active slide
 	
@@ -134,11 +142,6 @@ njt.setActive = function (elem) {
 	//set active class to active tab
 	this.v.tabEls.removeClass(o.activeTabClass);
 	tab.addClass(o.activeTabClass);
-
-	//set active class to content el
-	// this.v.contentEls.removeClass(o.activeContentClass);
-	// tabContent.addClass(o.activeContentClass);
-
 
 	//anim function
 	// if(typeof o.anim === 'function') {
@@ -150,7 +153,7 @@ njt.setActive = function (elem) {
 	// }
 	// njTabs.anim[o.anim].call(this, $(this.v.contentEls[this.active]), tabContent, this.active, index);
 
-	this._changeSlide(this.v.contentEls[this.active], tabContent[0], this.active, index)
+	this._changeSlide(this.v.contentEls[this.active], tabContent[0], this.active, index);
 
 	this.active = index;
 
@@ -277,15 +280,9 @@ njTabs.defaults = {
 	activeTabClass:         'active',
 	activeContentClass:     'active',
 
-	contentClass:           'njt-el',//class that will be given to every tab content el
-
+	contentClass:           'njt-el',//class that will be given to every tab content element
 	makeRelative:    true//should we make content wrapper relative? if it has static position, of course
 }
-
-
-
-
-
 })(window, document);
 
 
@@ -296,5 +293,4 @@ $(document).on('DOMContentLoaded', function () {
 			tabs: $(this)
 		})
 	})
-
 })

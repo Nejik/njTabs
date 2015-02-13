@@ -511,7 +511,7 @@ j.fn.data = function (name, value) {
 			var atributes = this[0].attributes;
 			for (var i = 0, l = atributes.length; i < l ;i++) {
 				if(/^data-/.test(atributes[i].name)) {
-					atr[atributes[i].name.replace(/data\-/,'')] = atributes[i].value;
+					atr[j._toCamel(atributes[i].name.replace(/data\-/,''))] = atributes[i].value;
 					
 				}
 			}

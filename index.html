@@ -38,6 +38,9 @@
 	<![endif]-->
 	<title>njTabs</title>
 	<style>
+		html {
+			overflow: scroll;
+		}
 		.active, .active a {
 			color: red;
 		}
@@ -58,18 +61,38 @@
 			width: 100%;
 			/*position: absolute;*/
 		}
+		
 
+		.njt-anim-fade .njt-el { 
+			opacity: 0;
+
+			-webkit-transition: opacity 300ms;
+			-o-transition: opacity 300ms;
+			transition: opacity 300ms;
+		}
+		.njt-anim-fade .njt-active-init {
+
+		}
+		.njt-anim-fade .active {
+			opacity: 1;
+		}
+		.njt-anim-fade .njt-hide-init {
+			position: absolute;top: 0;
+		}
+		.njt-anim-fade .njt-hide {
+
+		}
 	</style>
 </head>
 <body>
 	<ul class="njTabs"
 		data-njt-content=".njTabs-content"
 		data-njt-trigger="a"
-		data-njt-anim="scale"
+		data-njt-anim="slideOut"
 		
 	>
 		<li><a href="#!">tab <span>1</span></a></li>
-		<li class="active"><a href="#!">tab <span>2</span></a></li>
+		<li><a href="#!">tab <span>2</span></a></li>
 		<li><a href="#!">tab <span>3</span></a></li>
 	</ul>
 
@@ -77,9 +100,9 @@
 		<div><img src="img/1.jpg" alt="" /></div>
 		<div>
 			<img src="img/2.jpg" alt="" />
-			<h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.
+			<h1>2</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.
 		</div>
-		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+		<div><h1>3</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 		<div><h1>2</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 		<div><h1>3</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 	</div>
@@ -89,8 +112,7 @@
 	<script src="js/j.js"></script>
 	<script src="js/njTabs.js"></script>
 	<script>
-		var t = $('.njTabs');
-		
+		// var t = $('.njTabs');
 	</script>
 </body>
 </html>

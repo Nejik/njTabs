@@ -106,3 +106,19 @@
 	-o-transform: scale(1) translateX(0);
 	transform: scale(1) translateX(0);
 }
+
+
+
+/*fade*/
+.njt-anim-fade .njt-el { 
+	opacity: 0;
+	-webkit-transition: opacity 300ms;
+	-o-transition: opacity 300ms;
+	transition: opacity 300ms;
+}
+.njt-anim-fade .active {
+	opacity: 1;
+}
+.njt-anim-fade .njt-hide-init {
+	position: absolute;top: 0;
+}

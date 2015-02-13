@@ -6,3 +6,7 @@
 .njTabs-content div img {
 	width:100%
 }
+
+
+-not-tab
+-название классов
