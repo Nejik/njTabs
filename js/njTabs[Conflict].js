@@ -49,9 +49,8 @@ window.njTabs = function(opts) {
 		o.e = e;
 		that.setActive(e.target || e.srcElement);
 
-		if(!$(e.target || e.srcElement).hasClass('not-tab')) o.e.preventDefault();
+		if(!$(e.target || e.srcElement).hasClass('not-prevent')) o.e.preventDefault();
 	})
-
 
 	this.setActive(true);
 };
@@ -133,13 +132,10 @@ njt.setActive = function (elem) {
 	
 	//set active class to active tab
 	this.v.tabEls.removeClass(o.activeTabClass);
-	tab.addClass(o.activeTabClass);
-
-	//set active class to content el
-	// this.v.contentEls.removeClass(o.activeContentClass);
-	// tabContent.addClass(o.activeContentClass);
+	tab.addClass(o.activeTabClass)
 
 
+	this.v.contentWrap.addClass('njt-anim-'+this.o.anim);
 	//anim function
 	// if(typeof o.anim === 'function') {
 	// 	o.anim.call(this, $(this.v.contentEls[this.active]), tabContent, this.active, index);
@@ -169,53 +165,39 @@ njt._changeSlide = function (oldTab, newTab, oldIndex, newIndex) {
 		$oldTab = $(oldTab),
 		$newTab = $(newTab);
 
-
-	if(typeof this.o.anim === 'string') {
-		this.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
-		this.v.contentWrap.addClass('njt-anim-'+this.o.anim);
-
-		//hide old tab
-		$oldTab.removeClass('active njt-active-init');
-		$oldTab.addClass('njt-hide-init');
-		newTab.clientHeight;
-		$oldTab.addClass('njt-hide');
-
-		if(that._getMaxTransitionDuration(oldTab)) {//if there is no transition duration, even with null setTimeout, "display none" applies after new content el apply "display block", and it flickers a little
-			setTimeout(function(){
-				$oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-			}, that._getMaxTransitionDuration(oldTab))
-		} else {
-			$oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-		}
-		
-
-
-
-
-		//show new tab
-		newTab.clientHeight;
-		$newTab.css({'display':'block'});
-		$newTab.addClass('njt-active-init');
-		newTab.clientHeight;
+	//first tab
+	if(!$oldTab.length) {
+		$newTab.css({'display':'block'})
 		$newTab.addClass('active');
-		
-		setTimeout(function(){
-			$newTab.removeClass('njt-active-init');
-		}, that._getMaxTransitionDuration(newTab))
-
-
-
-		setTimeout(function(){
-			that.v.contentWrap.removeClass('njt-anim-'+that.o.anim);
-			that.anim = false;
-		}, Math.max(that._getMaxTransitionDuration(oldTab), that._getMaxTransitionDuration(newTab)))//choose maximum transition time, because we can have different transition duration on show/hide elements
-
-	} else {
-		$oldTab.removeClass('active').css('display','none');
-		$newTab.addClass('active').css({'display':'block'})
+		return;
 	}
-}
 
+
+	this.anim = true;
+	// oldTab.removeClass('active').addClass('njTabs-hide');
+
+	$oldTab.addClass('njt-hide');
+
+
+	setTimeout(function(){
+		$oldTab.removeClass('active njt-hide').css('display','none');
+
+		
+
+
+		that.anim = false;
+	}, that._getMaxTransitionDuration(oldTab))
+
+	
+	$newTab.css({'display':'block'});
+	newTab.clientHeight;
+	$newTab.addClass('active');
+
+	// $newTab.css({'display':'block'});
+	// newTab.clientHeight;
+	// $newTab.addClass('active');
+
+}
 
 
 
@@ -247,7 +229,6 @@ njt._gatherData = function (el) {
 
 	this.o = $.extend(this.o, dataMeta);
 }
-
 njt._getMaxTransitionDuration = function (el) {
 	var el = $(el),
 	    str,
@@ -265,19 +246,23 @@ njt._getMaxTransitionDuration = function (el) {
 }
 
 njTabs.defaults = {
-	tabs:                   '.njTabs',
+	tabs:            '.njTabs',
 
-	tabSelector:            'li',
-	contentSelector:        'div',
+	tabSelector:     'li',
+	contentSelector: 'div',
 
-	anim:                   false,
-	trigger:                'li',
-	triggerEvent:           'click',
+	anim:            'no',
 
-	activeTabClass:         'active',
-	activeContentClass:     'active',
+	trigger:         'li',
 
-	contentClass:           'njt-el',//class that will be given to every tab content el
+
+	triggerEvent:    'click',
+	activeTabClass:        'active',
+	activeContentClass:    'active',
+
+	contentClass:    'njt-el',//class that will be given to every tab content el
+
+
 
 	makeRelative:    true//should we make content wrapper relative? if it has static position, of course
 }
@@ -285,6 +270,41 @@ njTabs.defaults = {
 
 
 
+
+njTabs.anim = {
+	'no': function (oldTab, newTab, oldIndex, newIndex) {
+		oldTab.css({'display':'none'}).removeClass(this.o.activeContentClass);
+		newTab.css({'display':'block'}).addClass(this.o.activeContentClass);
+
+	},
+	'fade': function (oldTab, newTab, oldIndex, newIndex) {
+		
+		
+	},
+	'scale': function (oldTab, newTab, oldIndex, newIndex) {
+		var that = this;
+
+		//first tab 
+		if(!oldTab.length) {
+			newTab.css({'display':'block'})
+			newTab.addClass('active');
+			return;
+		}
+
+
+		this.anim = true;
+		oldTab.removeClass('active').addClass('njTabs-hide');
+		setTimeout(function(){
+			oldTab.removeClass('njTabs-hide').css('display','none');
+			that.anim = false;
+		}, that._getMaxTransitionDuration(oldTab[0]))
+
+
+		newTab.css({'display':'block'});
+		newTab[0].clientHeight;
+		newTab.addClass('active');
+	}
+};
 
 })(window, document);
 

@@ -1,0 +1,108 @@
+/*this css is optional*/
+/*standart class position, please, don't break it*/
+.njt-anim-test .njt-el { 
+
+}
+.njt-anim-test .njt-active-init {
+
+}
+.njt-anim-test .active {
+
+}
+.njt-anim-test .njt-hide-init {
+
+}
+.njt-anim-test .njt-hide {
+
+}
+
+
+
+/*default animations*/
+/*scale*/
+.njt-anim-scale .njt-el {
+	opacity: 0;
+	webkit-transform: scale(0.5);
+	-ms-transform: scale(0.5);
+	-o-transform: scale(0.5);
+	transform: scale(0.5);
+
+	-webkit-transition: 300ms;
+	-o-transition: 300ms;
+	transition: 300ms;
+}
+
+.njt-anim-scale .active {
+	opacity: 1;
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	-o-transform: scale(1);
+	transform: scale(1);
+}
+
+.njt-anim-scale .njt-hide-init {
+	position: absolute;top: 0;
+}
+
+
+
+/*slideOut*/
+.njt-anim-slideOut .njt-el {
+	opacity: 0;
+	-webkit-transform: scale(0.5) translateX(0);
+	-ms-transform: scale(0.5) translateX(0);
+	-o-transform: scale(0.5) translateX(0);
+	transform: scale(0.5) translateX(0);
+
+	-webkit-transition: 300ms;
+	-o-transition: 300ms;
+	transition: 300ms;
+}
+
+.njt-anim-slideOut .active {
+	opacity: 1;
+	-webkit-transform: scale(1);
+	-ms-transform: scale(1);
+	-o-transform: scale(1);
+	transform: scale(1);
+}
+
+.njt-anim-slideOut .njt-hide-init {
+	position: absolute;top: 0;
+	-webkit-transform: translateX(200px);
+	-ms-transform: translateX(200px);
+	-o-transform: translateX(200px);
+	transform: translateX(200px);
+}
+
+
+/*slideIn*/
+.njt-anim-slideIn .njt-el {
+	opacity: 0;
+	-webkit-transform: scale(0.5);
+	-ms-transform: scale(0.5);
+	-o-transform: scale(0.5);
+	transform: scale(0.5);
+
+	-webkit-transition: 300ms;
+	-o-transition: 300ms;
+	transition: 300ms;
+}
+
+.njt-anim-slideIn .njt-hide-init {
+	position: absolute;top: 0;
+}
+.njt-anim-slideIn .njt-active-init {
+	opacity: 0;
+	-webkit-transform: translateX(-200px);
+	-ms-transform: translateX(-200px);
+	-o-transform: translateX(-200px);
+	transform: translateX(-200px);
+}
+.njt-anim-slideIn .active {
+	opacity: 1;
+	-webkit-transform: scale(1) translateX(0);
+	-ms-transform: scale(1) translateX(0);
+	-o-transform: scale(1) translateX(0);
+	transform: scale(1) translateX(0);
+}

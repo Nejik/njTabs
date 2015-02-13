@@ -38,43 +38,59 @@
 	<![endif]-->
 	<title>njTabs</title>
 	<style>
-		.njTabs .active, .njTabs .active a {
+		.active, .active a {
 			color: red;
 		}
-		.njTabs-content > div {
-			display: none;
+		.njTabs {
+			text-align: center;
 		}
-		.njTabs-content .active {
-			display: block;
+		.njTabs-content {
+			width: 500px;
+			margin: 0 auto;
+			position: relative;
 		}
+		.njTabs-content h1 {
+			margin-top: 0;
+		}
+
+		img {
+			max-width: 100%;
+			width: 100%;
+			/*position: absolute;*/
+		}
+
 	</style>
 </head>
 <body>
-	<div class="class3">
-		<div class="class2">
-			<div class="class1">
-				<ul class="njTabs"
-					data-njt-content=".njTabs-content"
-					data-njt-trigger="a"
-				>
-					<li class="active"><a href="#!">tab <span>1</span></a></li>
-					<li><a href="#!">tab <span>2</span></a></li>
-					<li><a href="#!">tab <span>3</span></a></li>
-					<li><a href="#!">tab <span>4</span></a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
+	<ul class="njTabs"
+		data-njt-content=".njTabs-content"
+		data-njt-trigger="a"
+		data-njt-anim="scale"
+		
+	>
+		<li><a href="#!">tab <span>1</span></a></li>
+		<li class="active"><a href="#!">tab <span>2</span></a></li>
+		<li><a href="#!">tab <span>3</span></a></li>
+	</ul>
 
 	<div class="njTabs-content">
-		<div>1</div>
-		<div>2</div>
-		<div>3</div>
+		<div><img src="img/1.jpg" alt="" /></div>
+		<div>
+			<img src="img/2.jpg" alt="" />
+			<h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.
+		</div>
+		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+		<div><h1>2</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+		<div><h1>3</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 	</div>
 
 	<!-- // <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  -->
 	<!-- // <script>window.jQuery || document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script> -->
 	<script src="js/j.js"></script>
 	<script src="js/njTabs.js"></script>
+	<script>
+		var t = $('.njTabs');
+		
+	</script>
 </body>
 </html>
