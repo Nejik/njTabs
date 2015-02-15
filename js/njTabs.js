@@ -43,7 +43,7 @@ window.njTabs = function(opts) {
 	this._gatherData(this.v.tabsWrap);
 
 
-	this.v.contentWrap = $(o.content).first();
+	this.v.contentWrap = $($(o.content)[0]);
 	if(!this.v.contentWrap.length) return;
 
 	this.v.tabEls = this.v.tabsWrap.find(o.tabSelector);
@@ -56,10 +56,10 @@ window.njTabs = function(opts) {
 		o.e = e;
 		var target = e.target || e.srcElement;
 
-		if(!$(target).hasClass('no-tab')) {
+		// if(!$(target).hasClass('no-tab')) {
 			that.show(target);
 			o.e.preventDefault()
-		}
+		// }
 	})
 
 	this.show(true);

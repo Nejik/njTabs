@@ -1,3 +1,16 @@
+.extend
+.data
+.find
+.addClass
+.removeClass
+.css
+.delegate
+.closest
+.attr
+.trigger
+
+
+
 -потестить динамическое добавление табов
 -сделать настройку not_trigger
 -ивенты show, shown, hide, hidden

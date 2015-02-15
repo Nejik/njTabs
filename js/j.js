@@ -62,52 +62,7 @@
 /////////////////////////////////////////////////////////////////////////
 //methods that can be removed
 /////////////////////////////////////////////////////////////////////////
-//create DOM elements from string
-//you can't create body tag with this func, if you need to create body tag, you can modify code, example you can find on next link - http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
-j.str2dom = function (html) {
-	var wrapMap = {
-		option: [ 1, "<select multiple='multiple'>", "</select>" ],
-		legend: [ 1, "<fieldset>", "</fieldset>" ],
-		area: [ 1, "<map>", "</map>" ],
-		param: [ 1, "<object>", "</object>" ],
-		thead: [ 1, "<table>", "</table>" ],
-		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
-		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
-		_default: [ 1, "<div>", "</div>" ]
-	};
 
-	wrapMap.optgroup = wrapMap.option;
-	wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
-	wrapMap.th = wrapMap.td;
-	var match = /<\s*\w.*?>/g.exec(html);
-	var element = document.createElement('div');
-
-
-	if (match != null) {
-		var tag = match[0].replace(/</g, '') .replace(/>/g, '') .split(' ') [0];
-
-		var map = wrapMap[tag] || wrapMap._default,
-			element;
-
-		html = map[1] + html + map[2];
-		element.innerHTML = html;
-		// Descend through wrappers to the right content
-
-		var j = map[0];
-
-		while (j--) {
-			element = element.lastChild;
-		}
-		element = element.children;
-
-		element = Array.prototype.slice.call(element);
-	} else {
-		element.innerHTML = html;
-		element = element.lastChild;
-	}
-	return element;
-}
 
 
 //extend function from jQuery
@@ -183,32 +138,6 @@ j.extend = function(){//for extend function we need: j.isArray, j.isFunction, j.
 };
 
 
-//(string|dom element|query|j collection)
-j.fn.add = function (selector) {
-	var newCollection = [],
-		newQuery;
-
-		//set old elements
-		this.each(function (i) {
-			newCollection[i] = this;
-		})
-
-
-	if(typeof selector === 'string') {
-		newQuery = $(selector);
-	} else if(selector.nodeType || selector === document || selector === window) {
-		newQuery = [selector]
-	} else if(selector.j && !selector.window) {
-		newQuery = selector;
-	}
-
-	for (var i = 0, l = newQuery.length; i < l ;i++) {
-		newCollection.push(newQuery[i]);
-	}
-
-	return $(newCollection);
-}
-
 j.fn.attr = function (name, value) {
 	if(typeof name === 'object') {
 		return this.each(function () {
@@ -225,12 +154,6 @@ j.fn.attr = function (name, value) {
 			return this[0].getAttribute(name) || undefined;
 		}
 	}
-}
-
-j.fn.removeAttr = function (name) {
-	return this.each(function () {
-		this.removeAttribute(name);
-	});
 }
 
 //Get the value of a style property for the first element in the set of matched elements or set one CSS property for every matched element.
@@ -253,86 +176,8 @@ j.fn.css = function (prop, value) {
 	}
 }
 
-j.fn.html = function (html) {
-	if(html) {
-		return this.each(function () {
-			this.innerHTML = html;
-		})
-	} else {
-		return this[0].innerHTML.trim() || undefined;
-	}
-}
-
-j.fn.text = function (text) {
-	if(text) {
-		return this.each(function () {
-			this.textContent = text;
-		})
-	} else {
-		// return this.appendChild(document.createTextNode(text));
-		return this[0].textContent.trim() || undefined;
-	}
-}
-
-//Check the current matched set of elements against a selector and return true if at least one of these elements matches the given arguments. (compares with dom nodes and j collections)
-j.fn.is = function (selector) {
-	var r = false;
-
-	//compare with selector
-	if(typeof selector === 'string') {
-		this.each(function (i) {
-			if(j.match(this,selector)) {
-				r = true;
-				return false;
-			}
-		})
-		return r;
-	}
-
-	//compare with document
-	else if(selector === document) {
-		this.each(function () {
-			if (this === document) {
-				r = true;
-				return false;
-			}
-		})
-		return r;
-	}
-
-	//compare with window
-	else if(selector === window) {
-		this.each(function () {
-			if (this === window) {
-				r = true;
-				return false;
-			}
-		})
-		return r;
-	}
-
-	//compare with dom element or j collection
-	else if(selector.nodeType || selector instanceof j) {
-		var compare = selector.nodeType ? [selector] : selector;
-
-		this.each(function () {
-			var el = this;
-
-			for (i = 0; i < compare.length; i++) {
-			    if (el === compare[i]) {
-			    	r = true;
-			    	return false;
-			    }
-			}
-
-		})
-		return r;
-
-	}
-}
-
 //Get the descendants of each element in the current set of matched elements
-j.fn.find = function (selector) {//wtf???
+j.fn.find = function (selector) {
 	var newArray = [],
 		tq;//temporary query
 
@@ -340,25 +185,6 @@ j.fn.find = function (selector) {//wtf???
 		tq = Array.prototype.slice.call(this.querySelectorAll(selector),'')
 		if(tq.length) {
 			newArray = newArray.concat(tq);
-		}
-	})
-	return j(newArray);
-}
-
-j.fn.children = function (selector) {
-	var newArray = [];
-
-	this.each(function (i) {
-		var children = this.children;
-
-		for (var i = 0, l = children.length; i < l ;i++) {
-			if(!selector) {
-				newArray.push(children[i]);
-			} else {
-				if(j.match(children[i], selector)) {
-					newArray.push(children[i])
-				}
-			}
 		}
 	})
 	return j(newArray);
@@ -406,80 +232,6 @@ j.fn.closest = function (selector) {
 
 
 
-
-//Remove the set of matched elements from the DOM.
-j.fn.remove = function () {
-	return this.each(function () {
-		if(this.parentNode) this.parentNode.removeChild(this);
-	})
-}
-
-//simple cloning
-j.fn.clone = function () {
-	var cloned = [];
-
-	this.each(function (i) {
-		cloned.push(this.cloneNode( true ));
-	});
-
-	return j(cloned);
-}
-
-//Insert content
-//this methods can't take html string, if you need to put html string, make smth like this (if html parser function included) - .append(j('<i>my html string</i>'))
-//required j.fn.clone if use clone flag
-j.fn._insert = function (content, clone, type) {
-	return this.each(function () {
-		var els = j(content),
-			frag = document.createDocumentFragment();
-
-		if(j.fn.clone && clone) els = j(content).clone();
-
-
-		//insert all elements in fragment, because prepend method insert elements reversed, aand also for perfomance
-		els.each(function () {
-			frag.appendChild( this );
-		});
-
-		switch(type) {
-		case 'append':
-		case 'appendTo':
-			this.appendChild(frag);
-		break;
-		case 'prepend':
-		case 'prependTo':
-			this.insertBefore(frag, this.firstChild)
-		break;
-		case 'before':
-			this.parentNode.insertBefore(frag, this);
-		break;
-		case 'after':
-			this.parentNode.insertBefore(frag, this.nextSibling);
-		break;
-		}
-	})
-}
-
-j.fn.append = function (content, clone) {
-	return j.fn._insert.call(this, content, clone || false, 'append')
-}
-j.fn.prepend = function (content, clone) {
-	return j.fn._insert.call(this, content, clone || false, 'prepend')
-}
-j.fn.before = function (content, clone) {
-	return j.fn._insert.call(this, content, clone || false, 'before')
-}
-j.fn.after = function (content, clone) {
-	return j.fn._insert.call(this, content, clone || false, 'after')
-}
-j.fn.prependTo = function (content, clone) {
-	j.fn._insert.call(content, this, clone || false, 'prependTo');
-	return this;
-}
-j.fn.appendTo = function (content, clone) {
-	j.fn._insert.call(content, this, clone || false, 'appendTo');
-	return this;
-}
 
 
 
@@ -563,30 +315,7 @@ j.fn.data = function (name, value) {
 	}
 	return r;
 }
-//Remove a previously-stored piece of data. (space-separated string naming the pieces of data to delete)
-//need methods: j._toDashed, j._toCamel
-j.fn.removeData = function(name) {
-	var arr = name.split(' '),
-		elem = document.createElement('div'),
-		dataSupport;
 
-	elem.setAttribute("data-a-b", "c");
-	dataSupport = !!(elem.dataset && elem.dataset.aB === "c");
-
-	if(dataSupport) {
-		this.each(function (i) {
-			for (var i = 0, l = arr.length; i < l ;i++) {
-				delete this.dataset[j._toCamel(arr[i])];
-			}
-		})
-	} else {
-		this.each(function (i) {
-			for (var i = 0, l = arr.length; i < l ;i++) {
-				this.removeAttribute('data-' + j._toDashed(arr[i]));
-			}
-		})
-	}
-}
 
 
 
@@ -635,30 +364,6 @@ j.fn.removeClass = function (classes) {
 	return this;
 }
 
-j.fn.hasClass = function (name) {//if one of elements has this class, return true
-	var classListExist = !!('classList' in document.createElement('p'))
-	var r = false;
-
-	if(classListExist) {
-		this.each(function(i) {
-			if(this.classList.contains(name)) {
-				r = true;
-				return false;
-			}
-
-		});
-
-		return r;
-	} else {//for ie9
-		this.each(function (i) {
-			if(this.className.indexOf(name) > -1) {
-				r = true;
-				return false;
-			}
-		})
-		return r;
-	}
-}
 
 
 
@@ -727,12 +432,6 @@ j.fn.delegate = function (selector, event, fn) {
 	})
 }
 
-j.fn.off = function (type, fn) {
-	return this.each(function () {
-		this.removeEventListener( type, fn.handler, false );
-	})
-}
-
 j.fn.trigger = function (type, data) {
 	return this.each(function (i) {
 		var event = document.createEvent('HTMLEvents');
@@ -744,220 +443,3 @@ j.fn.trigger = function (type, data) {
 		// return this;
 	})
 }
-
-j.fn.triggerHandler = function (type, data) {
-	var event = document.createEvent('HTMLEvents');
-	event.initEvent(type, false, true);
-	event.data = data || [];
-	event.eventName = type;
-	event.target = this[0];
-	this[0].dispatchEvent(event);
-	return this;
-}
-
-
-
-
-
-
-
-
-
-
-j.fn.val = function (value) {
-	if(value) {
-		return this.each(function () {
-			this.value = value;
-		})
-	} else {
-		return this[0].value;
-	}
-}
-
-//work same as in jquery
-j.fn.index =  function (selector) {
-	var that = this;
-	if(selector) {
-		var r;
-		if(selector.nodeType || selector instanceof j) {
-			var newSelector;
-			(selector.nodeType) ? newSelector = selector : newSelector = selector[0];
-			this.each(function (i) {
-				if(this === newSelector) {
-					r = i;
-					return false;
-				} else {
-					r = -1;
-				}
-			})
-		} else if(typeof selector === 'string') {
-			var queryFrom;
-			(typeof selector === 'string') ? queryFrom = $(selector) : queryFrom = selector;
-
-			queryFrom.each(function (i) {
-				if(that[0] === this) {
-					r = i;
-					return false;
-				}
-			})
-		}
-		return r;
-		
-	} else {//position relative to its sibling elements
-		var el = this[0],
-			i = 0;
-		while ((el = el.previousSibling) !== null) {
-		    if (el.nodeType === 1) i++;
-		}
-		return i;
-	}
-}
-
-j.fn.not = function (selector) {
-	var neededElements = [];
-
-	this.each(function () {
-		if(!j.match(this, selector)) {
-			neededElements.push(this)
-		}
-	})
-	return j(neededElements);
-}
-
-j.fn.focus = function () {
-	return this.each(function () {
-		try {
-			this.focus();
-		} catch ( e ) {}
-	})
-}
-
-j.fn.first = function () {//.first() method constructs a new j object from the first element in that set
-	return j(this[0]);
-}
-
-//works only as getter
-j.fn._scroll = function (dir) {
-	var el = this[0];
-	if(el === window) {
-		var supportPageOffset = window.pageXOffset !== undefined;
-		var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-
-		var x = supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft;
-		var y = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
-
-		if(dir === 'x') {
-			return x;
-		} else if(dir === 'y') {
-			return y;
-		}
-	} else {
-		if(dir === 'x') {
-			return el.scrollLeft;
-		} else if(dir === 'y') {
-			return el.scrollTop;
-		}
-	}
-}
-//works only as getter, needs j.fn._scroll to work
-j.fn.scrollTop = function () {
-	return j.fn._scroll.call(this, 'y');
-}
-//works only as getter, needs j.fn._scroll to work
-j.fn.scrollLeft = function () {
-	return j.fn._scroll.call(this, 'x');
-}
-
-j.fn.transform = function (transform) {
-	return this.each(function () {
-		var elStyle = this.style;
-		elStyle.webkitTransform = elStyle.MsTransform = elStyle.msTransform = elStyle.MozTransform = elStyle.OTransform = elStyle.transform = transform;
-	})
-}
-
-j.fn.transition = function (duration) {
-	if (typeof duration !== 'string') {
-		duration = duration + 'ms';
-	}
-
-	return this.each(function () {
-		var elStyle = this.style;
-		elStyle.webkitTransitionDuration = elStyle.MsTransitionDuration = elStyle.msTransitionDuration = elStyle.MozTransitionDuration = elStyle.OTransitionDuration = elStyle.transitionDuration = duration;
-	});
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////
-//Internet Explorer
-/////////////////////////////////////////////////////////////////////////
-//for ie <9
-//потестить более короткую версию
-// function addEvent(evnt, elem, func) {
-//    if (elem.addEventListener)  // W3C DOM
-//       elem.addEventListener(evnt,func,false);
-//    else if (elem.attachEvent) { // IE DOM
-//       elem.attachEvent("on"+evnt, func);
-//    }
-//    else { // No much to do
-//       elem[evnt] = func;
-//    }
-// }
-
-// j.fn.on = function (type, fn) {//thanks John Resig
-// 	return this.each(function () {
-// 		var obj = this;
-// 		if ( obj.attachEvent ) {
-// 			obj['e'+type+fn] = fn;
-// 			obj[type+fn] = function(){obj['e'+type+fn]( window.event );}
-// 			obj.attachEvent( 'on'+type, obj[type+fn] );
-// 		} else {
-// 			obj.addEventListener( type, fn, false );
-// 		}
-// 	})
-// }
-
-// j.fn.off = function (type, fn) {
-// 	return this.each(function () {
-// 		var obj = this;
-// 		if ( obj.detachEvent ) {
-// 			obj.detachEvent( 'on'+type, obj[type+fn] );
-// 			obj[type+fn] = null;
-// 		} else {
-// 			obj.removeEventListener( type, fn, false );
-// 		}
-// 	})
-// }
-
-
-
-
-
-
-
-
-
-
