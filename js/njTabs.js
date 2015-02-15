@@ -307,7 +307,7 @@ njt._getMaxTransitionDuration = function (el) {
 }
 
 njTabs.defaults = {
-	// tabs:                   '.njTabs',
+	tabs:                   '.njTabs',
 
 	tabSelector:            'a',
 	presentation:           'li',//closest element for adding active class
@@ -320,7 +320,6 @@ njTabs.defaults = {
 	contentClass:           'njTabs-el',//class that will be given to every tab content element
 
 	makeRelative:           true,//should we make content wrapper relative? if it has static position, of course
-	bind:                   '.njTabs'//selector for autobinding
 }
 })(window, document);
 
@@ -331,7 +330,7 @@ njTabs.defaults = {
 //autobind
 $(document).on('DOMContentLoaded', function () {
 	setTimeout(function(){
-		$(njTabs.defaults.bind).each(function () {
+		$(njTabs.defaults.tabs).each(function () {
 			njTabs({
 				tabs: $(this)
 			})
