@@ -1,6 +1,6 @@
 /*this css is optional*/
-/*standart class position, please, don't break it*/
-.njt-anim-test .njt-el { 
+/*standard class position, please, don't shuffle it*/
+.njt-anim-test .njTabs-el { 
 
 }
 .njt-anim-test .njt-active-init {
@@ -20,7 +20,7 @@
 
 /*default animations*/
 /*scale*/
-.njt-anim-scale .njt-el {
+.njt-anim-scale .njTabs-el {
 	opacity: 0;
 	webkit-transform: scale(0.5);
 	-ms-transform: scale(0.5);
@@ -47,7 +47,7 @@
 
 
 /*slideOut*/
-.njt-anim-slideOut .njt-el {
+.njt-anim-slideOut .njTabs-el {
 	opacity: 0;
 	-webkit-transform: scale(0.5) translateX(0);
 	-ms-transform: scale(0.5) translateX(0);
@@ -77,7 +77,7 @@
 
 
 /*slideIn*/
-.njt-anim-slideIn .njt-el {
+.njt-anim-slideIn .njTabs-el {
 	opacity: 0;
 	-webkit-transform: scale(0.5);
 	-ms-transform: scale(0.5);
@@ -94,10 +94,10 @@
 }
 .njt-anim-slideIn .njt-active-init {
 	opacity: 0;
-	-webkit-transform: translateX(-200px);
-	-ms-transform: translateX(-200px);
-	-o-transform: translateX(-200px);
-	transform: translateX(-200px);
+	-webkit-transform: translateX(200px);
+	-ms-transform: translateX(200px);
+	-o-transform: translateX(200px);
+	transform: translateX(200px);
 }
 .njt-anim-slideIn .active {
 	opacity: 1;
@@ -110,7 +110,7 @@
 
 
 /*fade*/
-.njt-anim-fade .njt-el { 
+.njt-anim-fade .njTabs-el { 
 	opacity: 0;
 	-webkit-transition: opacity 300ms;
 	-o-transition: opacity 300ms;

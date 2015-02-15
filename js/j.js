@@ -52,7 +52,7 @@
 
 	j.fn.each = function (callback) {
 		for (var i = 0, l = this.length; i < l ;i++) {
-			if (callback.call(this[i], i) === false) break;
+			if (callback.call(this[i], i, this[i]) === false) break;
 		}
 		return this;
 	}
@@ -332,7 +332,7 @@ j.fn.is = function (selector) {
 }
 
 //Get the descendants of each element in the current set of matched elements
-j.fn.find = function (selector) {
+j.fn.find = function (selector) {//wtf???
 	var newArray = [],
 		tq;//temporary query
 
@@ -340,6 +340,25 @@ j.fn.find = function (selector) {
 		tq = Array.prototype.slice.call(this.querySelectorAll(selector),'')
 		if(tq.length) {
 			newArray = newArray.concat(tq);
+		}
+	})
+	return j(newArray);
+}
+
+j.fn.children = function (selector) {
+	var newArray = [];
+
+	this.each(function (i) {
+		var children = this.children;
+
+		for (var i = 0, l = children.length; i < l ;i++) {
+			if(!selector) {
+				newArray.push(children[i]);
+			} else {
+				if(j.match(children[i], selector)) {
+					newArray.push(children[i])
+				}
+			}
 		}
 	})
 	return j(newArray);
@@ -367,10 +386,12 @@ j.fn.closest = function (selector) {
 			closestArr.push(this[i])
 		} else {
 			parent = this[i].parentNode;
+
 			while( parent.tagName !== 'HTML') {
 				if(j.match(parent, selector) && j.inArray(closestArr, parent) === -1) closestArr.push(parent);
 				parent = parent.parentNode;
 			}
+
 		}
 	}
 
