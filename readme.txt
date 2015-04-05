@@ -1,3 +1,7 @@
+//добавить триггер ивентов на врапер табов
+
+
+
 .extend
 .data
 .find
@@ -8,6 +12,7 @@
 .closest
 .attr
 .trigger
+.is
 
 
 

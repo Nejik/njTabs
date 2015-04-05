@@ -1,14 +1,14 @@
   /*!
-  * njTabs - v0.1
+  * njTabs - v2.0
   * nejikrofl@gmail.com
   * Copyright (c) 2015 N.J.
  */
- ;(function(window, document, undefined){
+;(function(window, document, undefined){
 'use strict';
 var $ = window.jQuery || window.j;
 
 if(!$) {
-	throw new Error('njTabs\'s requires jQuery or "j" library (https://github.com/Nejik/j)')
+	throw new Error('njTabs\'s requires jQuery or "j" library (https://github.com/Nejik/j)');
 	return false;
 }
 
@@ -26,131 +26,129 @@ window.njTabs = function(opts) {
 
 	this._o = {};//inner options
 
-	this.activeTab = {};
 	this.prevTab = {};
-
-	this.active = null;
+	this.activeTab = {};
 
 	this.v = {//object with cached variables
-		tabsWrap: $(o.tabs)
+		tabs: $(o.tabs)
 	};
-	if(!this.v.tabsWrap.length) return;
-
-	//remember instance in element
-	this.v.tabsWrap[0].njTabs = this;
-
-	//gather option from data-attributes from element
-	this._gatherData(this.v.tabsWrap);
 
 
-	this.v.contentWrap = $($(o.content)[0]);
-	if(!this.v.contentWrap.length) return;
+	if(!this.v.tabs.length) return;
+	//set instance in element
+	this.v.tabs[0].njTabs = this;
 
-	this.v.tabEls = this.v.tabsWrap.find(o.tabSelector);
+	//gather option from data-attributes of tabs element
+	this._gatherData(this.v.tabs);
+
+	this.v.content = $($(o.content));
+	if(!this.v.content.length) return;
+
+
+	//set to default, if we reinit
+	if(this._o.makeRelative) {
+		delete this._o.makeRelative;
+		this.v.content.css('position', '');
+	}
+	//make content wrapper relative, if it is not, used for animations
+	if(o.anim && o.makeRelative && this.v.content.css('position') === 'static') {
+		this._o.makeRelative = true;
+		this.v.content.css('position', 'relative');
+	}
+
+	this.v.tabEls = this.v.tabs.find(o.tabSelector).not(o.not);
+
+	console.log(this.v.tabEls)
 	
-	this.v.contentEls = this.v.contentWrap.find(o.contentSelector)
+	this.v.contentEls = this.v.content.find(o.contentSelector)
 											.addClass(o.contentClass)
 											.css({'display':'none'});
+	
 
-	this.v.tabsWrap.delegate(o.tabSelector, o.triggerEvent, function (e) {
+	// this.v.tabs.on(o.tabSelector, o.triggerEvent, function (e) {
+	this.v.tabs.on(o.triggerEvent+'.njTabs', o.tabSelector, function (e) {
 		o.e = e;
 		var target = e.target || e.srcElement;
 
-		// if(!$(target).hasClass('no-tab')) {
+		if(!$(target).closest(o.not).length) {
 			that.show(target);
-			o.e.preventDefault()
-		// }
+			e.preventDefault()
+		}
 	})
 
 	this.show(true);
+	return this;
 };
-var njt = njTabs.prototype;
 
+njTabs.forElement = function (elem) {
+	return $(elem)[0].njTabs;
+}
 
+var proto = njTabs.prototype;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-njt.show = function (elem) {
+proto.show = function (elem) {
 	if(this._o.anim) return;
 
 	var o = this.o,
 		that = this,
-		index,
+		newIndex,
 		tab,
 		tabContentSelector,
 		tabContent;
 
-	
-	//update variables for case, if developer generate new tabs, we support adding tabs dynamically
-	this.v.tabEls = this.v.tabsWrap.find(o.tabSelector);
-	this.v.contentEls = this.v.contentWrap.find(o.contentSelector);
 
 	//detect tab element
 	if(typeof elem === 'number') {//set active tab via zero-based index
-
 		if(elem < 0) {
 			elem = 0;
 		} else if(elem > this.v.tabEls.length - 1) {
 			elem = this.v.tabEls.length - 1;
 		}
-
+		newIndex = elem;
 		tab = $(this.v.tabEls[elem]);
-	} else if(elem === true) {
-		tab = this.v.tabsWrap.find('.active').find(o.tabSelector);
+	} else if(elem === true) {//initial show
+		//first version
+		// this.active = this.v.tabs.find(this.o.presentation + '.' + this.o.active);
+		// (this.active.length) ? this.active = this.active.index() : this.active = 0;
 
-		if(!tab.length) tab = $(this.v.tabEls[0])//there is no tab matched as active
+		//detect active tab
+		newIndex = 0;
+		if(o.start) newIndex = o.start;
+
+		var activeEl = this.v.tabs.find('.' + this.o.active).first();
+		if(activeEl.length) {
+			if(o.presentation && activeEl.is(o.presentation)) {
+				newIndex = activeEl.index();
+			} else if(!o.presentation) {
+				newIndex = activeEl.index();
+			}
+		}
+
+		tab = $(this.v.tabEls[newIndex]);
 	} else {//not number and not boolean, means that it is dom element
 		tab = $(elem).closest(o.tabSelector);
+
+		//find index of current tab, among other tabs
+		this.v.tabEls.each(function (i) {
+			if(this === tab[0]) {
+				newIndex = i;
+				return false;
+			}
+		})
 	}
-	
 	if(!tab.length) return;
 
-	//set active class to link, or to nearest specified element
-	if(o.presentation && o.presentation !== o.tabSelector) {
-		this.v.tabEls.closest(o.presentation).removeClass('active')
-		tab.closest(o.presentation).addClass('active')
-	} else {
-		this.v.tabEls.removeClass('active');
-		tab.addClass('active');
-	}
-
-	//find index of current tab, among other tabs
-	this.v.tabEls.each(function (i) {
-		if(this === tab[0]) {
-			index = i;
-			return false;
-		}
-	})
-	
-
-
-
 	//find needed content element
-
 	var href = function () {//check href
 		var href = tab.attr('href');
 
-		if(href !== '#' && href !== '#!' && !(/^(?:javascript)/i).test(href)) {//we check if href not fake attr
+		if(href && href !== '#' && href !== '#!' && !(/^(?:javascript)/i).test(href)) {//we check if href not fake attr
 			return href;
 		} else {
 			return false;
 		}
 	}();
-	tabContentSelector = href || tab.data('njtTarget') || index;
-
-
+	tabContentSelector = href || tab.data('njtTarget') || newIndex;
 
 	if(typeof tabContentSelector === 'string') {
 		tabContent = $(tabContentSelector);
@@ -158,109 +156,133 @@ njt.show = function (elem) {
 		tabContent = $(this.v.contentEls[tabContentSelector]);
 	}
 
+
+
 	this.prevTab = this.activeTab;
 	//remember info about current tab
 	this.activeTab = {
 		tab: tab[0],
-		index: index,
+		index: newIndex,
 		content: tabContent[0]
 	}
-
 	if(!tabContent.length) return;//if there is no tab content element, return
-	if(this.active === index) return;//don't change slide if it is active slide
+
+	//set active class to link, or to nearest specified element
+	this.v.tabs.find('.' + this.o.active).removeClass(this.o.active);//remove active class
+	if(o.presentation) {
+		tab.closest(o.presentation).addClass(this.o.active);
+	} else {
+		tab.addClass(this.o.active);
+	}
+
+
+
+	if(this.active === newIndex) return;//don't change slide if it is active slide
 
 	this._changeSlide();
 
-	this.active = index;
-};
+	this.active = newIndex;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-njt._changeSlide = function () {
+proto._changeSlide = function () {
 	var o = this.o,
 		that = this,
 		oldTab = $(this.prevTab.content),
 		newTab = $(this.activeTab.content);
 
+	this._cb_show(this.activeTab.tab);
+	this._cb_hide(this.prevTab.tab);
 
-	$(this.activeTab.tab).trigger('njt_show', [this]);
-	if($(this.prevTab.tab).length) $(this.prevTab.tab).trigger('njt_hide', [this]);
+	// if(typeof this.o.anim === 'string') {
+	// 	this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
 
-	if(typeof this.o.anim === 'string') {
-		this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
+	// 	//make content wrapper relative, if it is not, used for animations
+	// 	if(o.anim && o.makeRelative && this.v.contentWrap.css('position') === 'static') {
+	// 		this.v.contentWrap.css('position', 'relative');
+	// 	}
 
-		//make content wrapper relative, if it is not, used for animations
-		if(o.anim && o.makeRelative && this.v.contentWrap.css('position') === 'static') {
-			this.v.contentWrap.css('position', 'relative');
-		}
+	// 	this.v.contentWrap.addClass('njt-anim-'+this.o.anim);
 
-		this.v.contentWrap.addClass('njt-anim-'+this.o.anim);
+	// 	//hide old tab
+	// 	oldTab.removeClass('active njt-active-init');
+	// 	oldTab.addClass('njt-hide-init');
+	// 	newTab[0].clientHeight;
+	// 	oldTab.addClass('njt-hide');
 
-		//hide old tab
-		oldTab.removeClass('active njt-active-init');
-		oldTab.addClass('njt-hide-init');
-		newTab[0].clientHeight;
-		oldTab.addClass('njt-hide');
-
-		if(that._getMaxTransitionDuration(oldTab[0])) {//if there is no transition duration, even with null setTimeout, "display none" applies after new content el apply "display block", and it flickers a little
-			setTimeout(function(){
-				oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-				if($(that.prevTab.tab).length) $(that.prevTab.tab).trigger('njt_hidden', [that]);
-			}, that._getMaxTransitionDuration(oldTab[0]))
-		} else {
-			oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-		}
+	// 	if(that._getMaxTransitionDuration(oldTab[0])) {//if there is no transition duration, even with null setTimeout, "display none" applies after new content el apply "display block", and it flickers a little
+	// 		setTimeout(function(){
+	// 			oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
+	// 			if($(that.prevTab.tab).length) $(that.prevTab.tab).trigger('njt_hidden', [that]);
+	// 		}, that._getMaxTransitionDuration(oldTab[0]))
+	// 	} else {
+	// 		oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
+	// 	}
 		
 
 
 
 
-		//show new tab
-		newTab.css({'display':'block'});
-		newTab.addClass('njt-active-init');
-		newTab[0].clientHeight;
-		newTab.addClass('active');
+	// 	//show new tab
+	// 	newTab.css({'display':'block'});
+	// 	newTab.addClass('njt-active-init');
+	// 	newTab[0].clientHeight;
+	// 	newTab.addClass('active');
 		
-		setTimeout(function(){
-			newTab.removeClass('njt-active-init');
-			$(that.activeTab.tab).trigger('njt_shown', [that]);
-		}, that._getMaxTransitionDuration(newTab[0]))
+	// 	setTimeout(function(){
+	// 		newTab.removeClass('njt-active-init');
+	// 		$(that.activeTab.tab).trigger('njt_shown', [that]);
+	// 	}, that._getMaxTransitionDuration(newTab[0]))
 
 
 
-		setTimeout(function(){
-			that.v.contentWrap.removeClass('njt-anim-'+that.o.anim);
-			that._o.anim = false;
+	// 	setTimeout(function(){
+	// 		that.v.contentWrap.removeClass('njt-anim-'+that.o.anim);
+	// 		that._o.anim = false;
 
-		}, Math.max(that._getMaxTransitionDuration(oldTab[0]), that._getMaxTransitionDuration(newTab[0])))//choose maximum transition time, because we can have different transition duration on show/hide elements
+	// 	}, Math.max(that._getMaxTransitionDuration(oldTab[0]), that._getMaxTransitionDuration(newTab[0])))//choose maximum transition time, because we can have different transition duration on show/hide elements
 
-	} else {
+	// } else {
 		oldTab.removeClass('active').css('display','none');
-		if($(this.prevTab.tab).length) $(this.prevTab.tab).trigger('njt_hidden', [this]);
+		this._cb_hidden(this.prevTab.tab);
 		newTab.addClass('active').css({'display':'block'})
-	}
+		this._cb_shown(this.activeTab.tab)
+	// }
 }
 
-njt._gatherData = function (el) {
+
+proto._cb_hide = function (el) {//cb - callback
+	var $el = $(el);
+	if($el.length) $el.trigger('njt_hide', [this]);
+}
+proto._cb_hidden = function (el) {
+	var $el = $(el);
+	if($el.length) $el.trigger('njt_hidden', [this]);
+}
+proto._cb_show = function (el) {
+	var $el = $(el);
+	if($el.length) $el.trigger('njt_show', [this]);
+}
+proto._cb_shown = function (el) {
+	var $el = $(el);
+	if($el.length) $el.trigger('njt_shown', [this]);
+}
+
+proto.destroy = function () {
+	var o = this.o;
+
+	this.v.tabs.off('.njTabs');
+
+	this.v.tabs[0].njTabs = null;
+
+	if(this._o.makeRelative) {
+		delete this._o.makeRelative;
+		this.v.content.css('position', '');
+	}
+
+	this.v.contentEls.removeClass(o.contentClass)
+					 .css('display','');
+}
+proto._gatherData = function (el) {
 	var o = this.o,
 		$el = $(el),
 		dataO = el.data(),//original data
@@ -287,15 +309,17 @@ njt._gatherData = function (el) {
 		}
 	}
 
+	//we can't redefine tabs options
+	delete dataMeta.tabs;
+
 	this.o = $.extend(this.o, dataMeta);
 }
-
-njt._getMaxTransitionDuration = function (el) {
+proto._getMaxTransitionDuration = function (el) {
 	var el = $(el),
 	    str,
 	    arr;
 
-	if(!($(el).length)) return 0;
+	if(!$(el).length) return 0;
 
 	str = el.css('transitionDuration');
 
@@ -306,20 +330,26 @@ njt._getMaxTransitionDuration = function (el) {
 	return Math.max.apply(Math, arr)*1000;
 }
 
+
+// data-njt-target to tabs
 njTabs.defaults = {
-	tabs:                   '.njTabs',
+	tabs:                   '.njTabs',//(selector) default tabs wrapper selector
+	content:                '',//(selector) wrapper of content divs
+	tabSelector:            'a',//(selector) default tabs selector
+	presentation:           'li',//(selector) closest element for adding active class (for ul>li>a structure)
 
-	tabSelector:            'a',
-	presentation:           'li',//closest element for adding active class
+	start:                  false,//(number) index (start from 0) of tab that we should show after plugin init
+	active:                 'active',//(classname),!space not allowed! classname of active tab
+	not:                    '.not-tab',//(selector) elements with this class will not trigger (for example simple link among tabs)
 
-	contentSelector:        'div',
+	contentSelector:        'div',//(selector) selector of tabs content (used when no target at tabs)
 
-	anim:                   false,
-	triggerEvent:           'click',
+	anim:                   false,//(false || string) name of animation (see animation section)
+	triggerEvent:           'click',//(event) event for change slide
 
-	contentClass:           'njTabs-el',//class that will be given to every tab content element
+	contentClass:           'njTabs-el',//(classname) class that will be given to every tab content element (used for animations)
 
-	makeRelative:           true,//should we make content wrapper relative? if it has static position, of course
+	makeRelative:           true,//(boolean) should we make content wrapper relative? if it has static position, of course
 }
 })(window, document);
 
@@ -327,32 +357,67 @@ njTabs.defaults = {
 
 
 
+
+
+
+
+
+
+
+
+
+
 //autobind
-$(document).on('DOMContentLoaded', function () {
-	setTimeout(function(){
-		$(njTabs.defaults.tabs).each(function () {
-			njTabs({
-				tabs: $(this)
-			})
-		})
-	}, 20)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
-})
+// $(document).on('DOMContentLoaded', function () {
+// 	setTimeout(function(){
+// 		$(njTabs.defaults.tabs).each(function () {
+// 			njTabs({
+// 				tabs: $(this)
+// 			})
+// 		})
+// 	}, 20)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
+// })
 
 
 
 //jQuery, j plugin
 $.fn.njTabs = function( options ) {
-	
-	return this.each(function () {
-		if(typeof options === 'number') {
-			if(this.njTabs) {
-				this.njTabs.show(options);
-			}
-		} else {
-			var opts = $.extend({}, options);
-			opts.tabs = $(this);
-			njTabs(options);
-		}
-	})
+	if(!arguments.length) {
+		return this[0].njTabs;
+	} else {
+		
+	}
+
+	// return this.each(function () {
+
+	// 	if() {
+			
+	// 	}
+	// 	// if(typeof options === 'number') {
+	// 	// 	if(this.njTabs) {
+	// 	// 		this.njTabs.show(options);
+	// 	// 	}
+	// 	// } else {
+	// 	// 	var opts = $.extend({}, options);
+	// 	// 	opts.tabs = $(this);
+	// 	// 	njTabs(options);
+	// 	// }
+	// })
 
 };
+// $.fn.njTabs = function( options ) {
+// 	return this.each(function () {
+// 		if(typeof options === 'number') {
+// 			if(this.njTabs) {
+// 				this.njTabs.show(options);
+// 			}
+// 		} else {
+// 			var opts = $.extend({}, options);
+// 			opts.tabs = $(this);
+// 			njTabs(options);
+// 		}
+// 	})
+// };
+
+
+
