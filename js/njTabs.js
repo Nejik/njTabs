@@ -218,8 +218,6 @@ proto._changeSlide = function () {
 		newTab.addClass('njt-active-init');
 		newTab[0].clientHeight;
 		newTab.addClass(o.activeContent);
-		this._cb_show(this.activeTab.tab);
-
 		
 		setTimeout(function(){
 			newTab.removeClass('njt-active-init');

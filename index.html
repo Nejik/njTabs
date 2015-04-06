@@ -86,6 +86,20 @@
 		
 	</script>
 	<script>
+
+
+		// $('.njTabs a') .on('njt_show', function (e) {
+							
+		// 				})
+		// 				.on('njt_shown', function (e) {
+		// 					console.log(arguments)
+		// 					console.log(this)
+		// 				})
+		$('.njTabs').on('njt_hide', function (e) {
+			console.log('hide')
+		}).on('njt_hidden', function (e) {
+			console.log('hidden')
+		})
 		njTabs({tabs:'.njTabs'})
 	</script>
 </body>
