@@ -58,8 +58,6 @@ window.njTabs = function(opts) {
 
 	this.v.tabEls = this.v.tabs.find(o.tabSelector).not(o.not);
 
-	console.log(this.v.tabEls)
-	
 	this.v.contentEls = this.v.content.find(o.contentSelector)
 											.addClass(o.contentClass)
 											.css({'display':'none'});
@@ -193,78 +191,81 @@ proto._changeSlide = function () {
 	this._cb_show(this.activeTab.tab);
 	this._cb_hide(this.prevTab.tab);
 
-	// if(typeof this.o.anim === 'string') {
-	// 	this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
+	if(typeof this.o.anim === 'string') {
+		this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
 
-	// 	//make content wrapper relative, if it is not, used for animations
-	// 	if(o.anim && o.makeRelative && this.v.contentWrap.css('position') === 'static') {
-	// 		this.v.contentWrap.css('position', 'relative');
-	// 	}
 
-	// 	this.v.contentWrap.addClass('njt-anim-'+this.o.anim);
+		this.v.content.addClass('njt-anim-'+this.o.anim);
 
-	// 	//hide old tab
-	// 	oldTab.removeClass('active njt-active-init');
-	// 	oldTab.addClass('njt-hide-init');
-	// 	newTab[0].clientHeight;
-	// 	oldTab.addClass('njt-hide');
+		//hide old tab
+		oldTab.removeClass(o.activeContent+' njt-active-init');
+		oldTab.addClass('njt-hide-init');
+		newTab[0].clientHeight;//force relayout
+		oldTab.addClass('njt-hide');
 
-	// 	if(that._getMaxTransitionDuration(oldTab[0])) {//if there is no transition duration, even with null setTimeout, "display none" applies after new content el apply "display block", and it flickers a little
-	// 		setTimeout(function(){
-	// 			oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-	// 			if($(that.prevTab.tab).length) $(that.prevTab.tab).trigger('njt_hidden', [that]);
-	// 		}, that._getMaxTransitionDuration(oldTab[0]))
-	// 	} else {
-	// 		oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
-	// 	}
+		if(that._getMaxTransitionDuration(oldTab[0])) {//if there is no transition duration, even with null setTimeout, "display none" applies after new content el apply "display block", and it flickers a little
+			setTimeout(function(){
+				oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
+				that._cb_hidden(that.prevTab.tab);
+			}, that._getMaxTransitionDuration(oldTab[0]))
+		} else {
+			oldTab.removeClass('njt-hide-init njt-hide').css('display','none');
+			this._cb_hidden(this.prevTab.tab);
+		}
+
+		//show new tab
+		newTab.css({'display':'block'});
+		newTab.addClass('njt-active-init');
+		newTab[0].clientHeight;
+		newTab.addClass(o.activeContent);
+		this._cb_show(this.activeTab.tab);
+
 		
+		setTimeout(function(){
+			newTab.removeClass('njt-active-init');
+			that._cb_shown(that.activeTab.tab);
+		}, that._getMaxTransitionDuration(newTab[0]))
 
 
 
+		setTimeout(function(){
+			that.v.content.removeClass('njt-anim-'+that.o.anim);
+			that._o.anim = false;
 
-	// 	//show new tab
-	// 	newTab.css({'display':'block'});
-	// 	newTab.addClass('njt-active-init');
-	// 	newTab[0].clientHeight;
-	// 	newTab.addClass('active');
-		
-	// 	setTimeout(function(){
-	// 		newTab.removeClass('njt-active-init');
-	// 		$(that.activeTab.tab).trigger('njt_shown', [that]);
-	// 	}, that._getMaxTransitionDuration(newTab[0]))
+		}, Math.max(that._getMaxTransitionDuration(oldTab[0]), that._getMaxTransitionDuration(newTab[0])))//choose maximum transition time, because we can have different transition duration on show/hide elements
 
-
-
-	// 	setTimeout(function(){
-	// 		that.v.contentWrap.removeClass('njt-anim-'+that.o.anim);
-	// 		that._o.anim = false;
-
-	// 	}, Math.max(that._getMaxTransitionDuration(oldTab[0]), that._getMaxTransitionDuration(newTab[0])))//choose maximum transition time, because we can have different transition duration on show/hide elements
-
-	// } else {
+	} else {
 		oldTab.removeClass('active').css('display','none');
 		this._cb_hidden(this.prevTab.tab);
 		newTab.addClass('active').css({'display':'block'})
 		this._cb_shown(this.activeTab.tab)
-	// }
+	}
 }
 
 
 proto._cb_hide = function (el) {//cb - callback
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_hide', [this]);
+
+
 }
 proto._cb_hidden = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_hidden', [this]);
+
+
 }
 proto._cb_show = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_show', [this]);
+
+
 }
 proto._cb_shown = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_shown', [this]);
+
+
 }
 
 proto.destroy = function () {
@@ -340,6 +341,7 @@ njTabs.defaults = {
 
 	start:                  false,//(number) index (start from 0) of tab that we should show after plugin init
 	active:                 'active',//(classname),!space not allowed! classname of active tab
+	activeContent:          'active',//(classname),!space not allowed! classname of active tab content
 	not:                    '.not-tab',//(selector) elements with this class will not trigger (for example simple link among tabs)
 
 	contentSelector:        'div',//(selector) selector of tabs content (used when no target at tabs)
