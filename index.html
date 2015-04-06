@@ -45,8 +45,13 @@
 			/*text-align: center;*/
 		}
 		#njTabs-content, #njTabs-content2 {
+			outline: 1px dashed red;
 			width: 500px;
 			margin: 0 auto;
+
+			-webkit-transition: height 300ms;
+			-o-transition: height 300ms;
+			transition: height 300ms;
 		}
 		#njTabs-content h1, #njTabs-content2 h1 {
 			margin-top: 0;
@@ -65,7 +70,6 @@
 	<ul class="njTabs" 
 		data-njt-content="#njTabs-content"
 		data-njt-anim="scale"
-
 	>
 		<li><a>tab <span>1</span></a></li>
 		<li><a>tab <span>2</span></a></li>
@@ -78,17 +82,43 @@
 		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 	</div>
 
+
+	<ul class="njTabs" 
+		data-njt-content="#njTabs-content2"
+		data-njt-anim="fade"
+	>
+		<li><a>tab <span>1</span></a></li>
+		<li><a>tab <span>2</span></a></li>
+		<li><a>tab <span>3</span></a></li>
+	</ul>
+
+	<div id="njTabs-content2">
+		<div><img src="img/1.jpg" alt="" /></div>
+		<div><img src="img/2.jpg" alt="" /></div>
+		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+	</div>
+
 	
 
-	<!-- // <script src="js/jquery-1.11.2.min.js"></script> -->
-	// <script src="js/j.js"></script>
+	// <script src="js/jquery-1.11.2.min.js"></script>
+	<!-- // <script src="js/j.js"></script> -->
 	<script src="js/njTabs.js"></script>
 
 	<script>
 		
 	</script>
 	<script>
-		// njTabs({tabs:'.njTabs'})
+		$('.njTabs').on('njt_show', function (e, ref) {
+			$('#njTabs-content').height($(ref.activeTab.content).height())
+		})
+
+
+		// njTabs({tabs:'#njTabs'});
+
+		
+
+		// var t2 = $('#njTabs').njTabs(2)
+		// console.log(t2)
 	</script>
 </body>
 </html>

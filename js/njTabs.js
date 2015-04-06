@@ -276,6 +276,7 @@ proto._cb_shown = function (el) {
 proto.destroy = function () {
 	var o = this.o;
 
+	this.v.tabs.trigger('njt_destroy', [this]);
 	this.v.tabs.off('.njTabs');
 
 	this.v.tabs[0].njTabs = null;
@@ -287,6 +288,8 @@ proto.destroy = function () {
 
 	this.v.contentEls.removeClass(o.contentClass)
 					 .css('display','');
+
+	this.v.tabs.trigger('njt_destroyed', [this])
 }
 proto._gatherData = function (el) {
 	var o = this.o,
@@ -378,39 +381,16 @@ $.fn.njTabs = function( options ) {
 	if(!arguments.length) {
 		return this[0].njTabs;
 	} else {
-		
+		return this.each(function () {
+			if(typeof options === 'object') {
+				var opts = $.extend({}, options);
+				opts.tabs = $(this);
+				njTabs(options);
+			} else if(typeof options === 'number') {
+				if(this.njTabs) {
+					this.njTabs.show(options);
+				}
+			}
+		});
 	}
-
-	// return this.each(function () {
-
-	// 	if() {
-			
-	// 	}
-	// 	// if(typeof options === 'number') {
-	// 	// 	if(this.njTabs) {
-	// 	// 		this.njTabs.show(options);
-	// 	// 	}
-	// 	// } else {
-	// 	// 	var opts = $.extend({}, options);
-	// 	// 	opts.tabs = $(this);
-	// 	// 	njTabs(options);
-	// 	// }
-	// })
-
 };
-// $.fn.njTabs = function( options ) {
-// 	return this.each(function () {
-// 		if(typeof options === 'number') {
-// 			if(this.njTabs) {
-// 				this.njTabs.show(options);
-// 			}
-// 		} else {
-// 			var opts = $.extend({}, options);
-// 			opts.tabs = $(this);
-// 			njTabs(options);
-// 		}
-// 	})
-// };
-
-
-
