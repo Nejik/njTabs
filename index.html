@@ -44,11 +44,11 @@
 		.njTabs {
 			/*text-align: center;*/
 		}
-		#njTabs-content {
+		#njTabs-content, #njTabs-content2 {
 			width: 500px;
 			margin: 0 auto;
 		}
-		#njTabs-content h1 {
+		#njTabs-content h1, #njTabs-content2 h1 {
 			margin-top: 0;
 		}
 		
@@ -67,16 +67,18 @@
 		data-njt-anim="scale"
 
 	>
-		<li><a href="#tab1">tab <span>1</span></a></li>
-		<li><a href="#tab2" data-njt-target="#dataTarget">tab <span>2</span></a></li>
-		<li><a href="#tab3">tab <span>3</span></a></li>
+		<li><a>tab <span>1</span></a></li>
+		<li><a>tab <span>2</span></a></li>
+		<li><a>tab <span>3</span></a></li>
 	</ul>
 
 	<div id="njTabs-content">
-		<div id="tab1"><img src="img/1.jpg" alt="" /></div>
-		<div id="tab2"><img src="img/2.jpg" alt="" /></div>
-		<div id="tab3"><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+		<div><img src="img/1.jpg" alt="" /></div>
+		<div><img src="img/2.jpg" alt="" /></div>
+		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 	</div>
+
+	
 
 	<!-- // <script src="js/jquery-1.11.2.min.js"></script> -->
 	// <script src="js/j.js"></script>
@@ -86,21 +88,7 @@
 		
 	</script>
 	<script>
-
-
-		// $('.njTabs a') .on('njt_show', function (e) {
-							
-		// 				})
-		// 				.on('njt_shown', function (e) {
-		// 					console.log(arguments)
-		// 					console.log(this)
-		// 				})
-		$('.njTabs').on('njt_hide', function (e) {
-			console.log('hide')
-		}).on('njt_hidden', function (e) {
-			console.log('hidden')
-		})
-		njTabs({tabs:'.njTabs'})
+		// njTabs({tabs:'.njTabs'})
 	</script>
 </body>
 </html>

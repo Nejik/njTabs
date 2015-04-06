@@ -30,7 +30,7 @@ window.njTabs = function(opts) {
 	this.activeTab = {};
 
 	this.v = {//object with cached variables
-		tabs: $(o.tabs)
+		tabs: $(o.tabs).first()
 	};
 
 
@@ -153,6 +153,7 @@ proto.show = function (elem) {
 	} else if(typeof tabContentSelector === 'number') {
 		tabContent = $(this.v.contentEls[tabContentSelector]);
 	}
+	if(!tabContent.length) return;//return if we have no content for tab
 
 
 
@@ -188,8 +189,14 @@ proto._changeSlide = function () {
 		oldTab = $(this.prevTab.content),
 		newTab = $(this.activeTab.content);
 
-	this._cb_show(this.activeTab.tab);
 	this._cb_hide(this.prevTab.tab);
+	this._cb_show(this.activeTab.tab);
+
+	if(oldTab[0] === newTab[0]) {//don't animate if we have one content tab for old and new tab
+		this._cb_hidden(this.prevTab.tab);
+		this._cb_shown(this.activeTab.tab);
+		return;
+	}
 
 	if(typeof this.o.anim === 'string') {
 		this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
@@ -353,30 +360,16 @@ njTabs.defaults = {
 }
 })(window, document);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //autobind
-// $(document).on('DOMContentLoaded', function () {
-// 	setTimeout(function(){
-// 		$(njTabs.defaults.tabs).each(function () {
-// 			njTabs({
-// 				tabs: $(this)
-// 			})
-// 		})
-// 	}, 20)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
-// })
+$(document).on('DOMContentLoaded', function () {
+	setTimeout(function(){
+		$(njTabs.defaults.tabs).each(function () {
+			njTabs({
+				tabs: $(this)
+			})
+		})
+	}, 50)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
+})
 
 
 
