@@ -21,6 +21,19 @@ window.njTabs = function(opts) {
 		return new njTabs(opts);
 	}
 
+	this.init(opts);
+	this.show(true);
+	return this;
+};
+
+njTabs.forElement = function (elem) {
+	return $(elem)[0].njTabs;
+}
+
+var proto = njTabs.prototype;
+
+proto.init = function (opts) {
+	opts = opts || {};
 	var o = this.o = $.extend(true, {}, njTabs.defaults, opts),
 		that = this;
 
@@ -73,16 +86,7 @@ window.njTabs = function(opts) {
 			e.preventDefault()
 		}
 	})
-
-	this.show(true);
-	return this;
 };
-
-njTabs.forElement = function (elem) {
-	return $(elem)[0].njTabs;
-}
-
-var proto = njTabs.prototype;
 
 proto.show = function (elem) {
 	if(this._o.anim) return;
