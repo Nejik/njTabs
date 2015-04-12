@@ -26,7 +26,7 @@ window.njTabs = function(opts) {
 	return this;
 };
 
-njTabs.forElement = function (elem) {
+njTabs.forElement = function (elem) {//return instance
 	return $(elem)[0].njTabs;
 }
 
@@ -76,8 +76,7 @@ proto.init = function (opts) {
 											.css({'display':'none'});
 	
 
-	// this.v.tabs.on(o.tabSelector, o.triggerEvent, function (e) {
-	this.v.tabs.on(o.triggerEvent+'.njTabs', o.tabSelector, function (e) {
+	this.v.tabs.off(o.triggerEvent+'.njTabs').on(o.triggerEvent+'.njTabs', o.tabSelector, function (e) {
 		o.e = e;
 		var target = e.target || e.srcElement;
 
@@ -140,6 +139,8 @@ proto.show = function (elem) {
 	}
 	if(!tab.length) return;
 
+
+
 	//find needed content element
 	var href = function () {//check href
 		var href = tab.attr('href');
@@ -151,6 +152,8 @@ proto.show = function (elem) {
 		}
 	}();
 	tabContentSelector = href || tab.data('njtTarget') || newIndex;
+
+	
 
 	if(typeof tabContentSelector === 'string') {
 		tabContent = $(tabContentSelector);
