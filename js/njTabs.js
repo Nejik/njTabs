@@ -21,17 +21,18 @@ window.njTabs = function(opts) {
 		return new njTabs(opts);
 	}
 
-	this.init(opts, true);
+	this._init(opts);
 	return this;
 };
 
 njTabs.forElement = function (elem) {//return instance
+
 	return $(elem)[0].njTabs;
 }
 
 var proto = njTabs.prototype;
 
-proto.init = function (opts, forceShow) {
+proto._init = function (opts) {
 	opts = opts || {};
 	var o = this.o = $.extend(true, {}, njTabs.defaults, opts),
 		that = this;
@@ -86,9 +87,7 @@ proto.init = function (opts, forceShow) {
 		}
 	})
 
-	if(forceShow) {
-		this.show(true);
-	}
+	this.show(true);
 };
 
 proto.show = function (elem) {
@@ -190,6 +189,29 @@ proto.show = function (elem) {
 	this.active = newIndex;
 }
 
+proto.destroy = function () {
+	var o = this.o;
+
+	this.v.tabs.trigger('njt_destroy', [this]);
+	this.v.tabs.off('.njTabs');
+
+	this.v.tabs[0].njTabs = null;
+
+	this.v.tabEls.closest(o.presentation).removeClass(o.active);
+
+	if(this._o.makeRelative) {
+		delete this._o.makeRelative;
+		this.v.content.css('position', '');
+	}
+
+	
+	this.v.contentEls.removeClass(o.contentClass)
+					 .removeClass(o.activeContent)
+					 .css('display','');
+
+	this.v.tabs.trigger('njt_destroyed', [this]);
+}
+
 proto._changeSlide = function () {
 	var o = this.o,
 		that = this,
@@ -199,7 +221,7 @@ proto._changeSlide = function () {
 	this._cb_hide(this.prevTab.tab);
 	this._cb_show(this.activeTab.tab);
 
-	if(oldTab[0] === newTab[0]) {//don't animate if we have one content tab for old and new tab
+	if(oldTab[0] === newTab[0]) {//don't change if we have one content tab for old and new tab
 		this._cb_hidden(this.prevTab.tab);
 		this._cb_shown(this.activeTab.tab);
 		return;
@@ -207,7 +229,6 @@ proto._changeSlide = function () {
 
 	if(typeof this.o.anim === 'string') {
 		this._o.anim = true;//flag that shows animation in action, we can't change tabs, while previous animation not finished
-
 
 		this.v.content.addClass('njt-anim-'+this.o.anim);
 
@@ -254,7 +275,6 @@ proto._changeSlide = function () {
 	}
 }
 
-
 proto._cb_hide = function (el) {//cb - callback
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_hide', [this]);
@@ -274,28 +294,7 @@ proto._cb_shown = function (el) {
 
 
 
-proto.destroy = function () {
-	var o = this.o;
 
-	this.v.tabs.trigger('njt_destroy', [this]);
-	this.v.tabs.off('.njTabs');
-
-	this.v.tabs[0].njTabs = null;
-
-	this.v.tabEls.closest(o.presentation).removeClass(o.active);
-
-	if(this._o.makeRelative) {
-		delete this._o.makeRelative;
-		this.v.content.css('position', '');
-	}
-
-	
-	this.v.contentEls.removeClass(o.contentClass)
-					 .removeClass(o.activeContent)
-					 .css('display','');
-
-	this.v.tabs.trigger('njt_destroyed', [this]);
-}
 
 proto._gatherData = function (el) {
 	var o = this.o,
@@ -399,6 +398,22 @@ $.fn.njTabs = function( options ) {
 			})
 			return this[0].njTabs;
 		}
+	} else if(typeof options === 'string') {
+		if(options[0] !== '_') {
+			var returns;
+
+			this.each(function () {
+				var instance = this.njTabs;
+
+				if (instance instanceof njTabs && typeof instance[options] === 'function') {
+				    returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
+				}
+			})
+		} else {
+			throw new Error('njTabs plugin does not permit private methods.');
+		}
+
+		return returns !== undefined ? returns : this;
 	} else {//if we have arguments
 		return this.each(function () {
 			if(typeof options === 'object') {//we have options passed in arguments, init tabs with this options
@@ -412,6 +427,13 @@ $.fn.njTabs = function( options ) {
 			}
 		});
 	}
+
+
+	 
+
+
+
+	 
 
 
 
