@@ -1,8 +1,8 @@
-  /*!
-  * njTabs - v2.0
-  * nejikrofl@gmail.com
-  * Copyright (c) 2015 N.J.
- */
+/*!
+* njTabs - v2.0
+* nejikrofl@gmail.com
+* Copyright (c) 2015 N.J.
+*/
 ;(function(window, document, undefined){
 'use strict';
 var $ = window.jQuery || window.j;
@@ -21,7 +21,7 @@ window.njTabs = function(opts) {
 		return new njTabs(opts);
 	}
 
-	this.init(opts);
+	this.init(opts, true);
 	return this;
 };
 
@@ -31,7 +31,7 @@ njTabs.forElement = function (elem) {//return instance
 
 var proto = njTabs.prototype;
 
-proto.init = function (opts) {
+proto.init = function (opts, forceShow) {
 	opts = opts || {};
 	var o = this.o = $.extend(true, {}, njTabs.defaults, opts),
 		that = this;
@@ -45,16 +45,17 @@ proto.init = function (opts) {
 		tabs: $(o.tabs).first()
 	};
 
-
 	if(!this.v.tabs.length) return;
-	//set instance in element
-	this.v.tabs[0].njTabs = this;
-
+	
 	//gather option from data-attributes of tabs element
 	this._gatherData(this.v.tabs);
 
-	this.v.content = $($(o.content));
+	this.v.content = $(o.content);
 	if(!this.v.content.length) return;
+
+
+	//set instance in element
+	this.v.tabs[0].njTabs = this;
 
 
 	//set to default, if we reinit
@@ -85,7 +86,9 @@ proto.init = function (opts) {
 		}
 	})
 
-	this.show(true);
+	if(forceShow) {
+		this.show(true);
+	}
 };
 
 proto.show = function (elem) {
@@ -109,10 +112,6 @@ proto.show = function (elem) {
 		newIndex = elem;
 		tab = $(this.v.tabEls[elem]);
 	} else if(elem === true) {//initial show
-		//first version
-		// this.active = this.v.tabs.find(this.o.presentation + '.' + this.o.active);
-		// (this.active.length) ? this.active = this.active.index() : this.active = 0;
-
 		//detect active tab
 		newIndex = 0;
 		if(o.start) newIndex = o.start;
@@ -259,27 +258,21 @@ proto._changeSlide = function () {
 proto._cb_hide = function (el) {//cb - callback
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_hide', [this]);
-
-
 }
 proto._cb_hidden = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_hidden', [this]);
-
-
 }
 proto._cb_show = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_show', [this]);
-
-
 }
 proto._cb_shown = function (el) {
 	var $el = $(el);
 	if($el.length) $el.trigger('njt_shown', [this]);
-
-
 }
+
+
 
 proto.destroy = function () {
 	var o = this.o;
@@ -289,16 +282,21 @@ proto.destroy = function () {
 
 	this.v.tabs[0].njTabs = null;
 
+	this.v.tabEls.closest(o.presentation).removeClass(o.active);
+
 	if(this._o.makeRelative) {
 		delete this._o.makeRelative;
 		this.v.content.css('position', '');
 	}
 
+	
 	this.v.contentEls.removeClass(o.contentClass)
+					 .removeClass(o.activeContent)
 					 .css('display','');
 
-	this.v.tabs.trigger('njt_destroyed', [this])
+	this.v.tabs.trigger('njt_destroyed', [this]);
 }
+
 proto._gatherData = function (el) {
 	var o = this.o,
 		$el = $(el),
@@ -394,21 +392,27 @@ $.fn.njTabs = function( options ) {
 		if(this[0].njTabs) {//if tabs inited on this element, return instance
 			return this[0].njTabs;
 		} else {//if tabs not inited on this element, try to init(maybe we have data attributes)
-			var opts = $.extend({}, options);
-			opts.tabs = $(this);
-			njTabs(options);
-		}
-	} else {
-		return this.each(function () {
-			if(typeof options === 'object') {
+			this.each(function () {
 				var opts = $.extend({}, options);
 				opts.tabs = $(this);
 				njTabs(options);
-			} else if(typeof options === 'number') {
+			})
+			return this[0].njTabs;
+		}
+	} else {//if we have arguments
+		return this.each(function () {
+			if(typeof options === 'object') {//we have options passed in arguments, init tabs with this options
+				var opts = $.extend({}, options);
+				opts.tabs = $(this);
+				njTabs(options);
+			} else if(typeof options === 'number') {//we have number in arguments, it is shortcut for .show(number) method
 				if(this.njTabs) {
 					this.njTabs.show(options);
 				}
 			}
 		});
 	}
+
+
+
 };

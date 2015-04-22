@@ -71,15 +71,15 @@
 		id="tabs1"
 		data-njt-content="#njTabs-content"
 	>
-		<li><a>tab <span>1</span></a></li>
-		<li><a>tab <span>2</span></a></li>
-		<li><a>tab <span>3</span></a></li>
+		<li><a href="#tab3">tab <span>1</span></a></li>
+		<li><a href="#tab1">tab <span>2</span></a></li>
+		<li><a href="#tab2">tab <span>3</span></a></li>
 	</ul>
 
 	<div id="njTabs-content">
-		<div><img src="img/1.jpg" alt="" /></div>
-		<div><img src="img/2.jpg" alt="" /></div>
-		<div><h1>1</h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
+		<div id="tab1"><h2>Tab1</h2><img src="img/1.jpg" alt="" /></div>
+		<div id="tab2"><h2>Tab2</h2><img src="img/2.jpg" alt="" /></div>
+		<div id="tab3"><h2>Tab3</h2>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores facilis, eveniet omnis. Tempora sit expedita numquam modi, veritatis saepe accusantium quasi possimus minus architecto sunt nam porro! Dolore animi ipsa voluptatum eveniet reprehenderit. Illum ipsum, error reprehenderit sunt nam nemo nostrum possimus, voluptas odit. Ducimus eveniet similique alias, eum est.</div>
 	</div>
 
 
@@ -117,7 +117,13 @@
 			// 	njTabs({tabs:$('#tabs1')});
 			// }, 1000)
 
-			$('#tabs1').njTabs();
+			var t = njTabs();
+
+			setTimeout(function(){
+				t.destroy();
+			}, 1000)
+
+			
 
 			
 		});
