@@ -1,37 +1,36 @@
-//
-
-
+//используемые методы
 .extend
+.first
 .data
+.css
 .find
+.not
 .addClass
 .removeClass
-.css
-.delegate
-.closest
-.attr
+.on
+.off
 .trigger
+.closest
 .is
+.index
+.attr
 
 
-
--потестить динамическое добавление табов
--сделать настройку not_trigger
--ивенты show, shown, hide, hidden
--можно инициализировать и вручную, и автобинд и через jquery
--можно использовать jquery .show(number) для активации слайда
 
 //ошибку img при max-width 100% можно исправив, установив
 .njTabs-content div {
-	width: 100%;
+    width: 100%;
 }
 либо
 .njTabs-content div img {
-	width:100%
+    width:100%
 }
 
 
+-можно инициализировать и вручную, и автобинд и через jquery
 -если плагин уже инициализирован, его нельзя повторно инициализировать
+
+-можно использовать jquery .show(number) для активации слайда
 -можно изменить default settings
 -instance добавляется к dom element-у tabsWrapper
 -no-tab
@@ -63,7 +62,8 @@
 - если многоуровневое меню, можно использовать data-njt-tab-selector=".njTabs > li > a"
 - активный таб можно узнать this.active, this.activeTab, this.activeContent;
 - если в show указать число меньшее нуля, будет использоваться индекс 0, если число больше кол-ва табов, используется индекс последнего таба
-
+--в гайд
+3 способа получения ссылки на instance
 
 
 
@@ -86,8 +86,6 @@
 
 
 
---в гайд
-3 способа получения ссылки на instance
 
 
 
@@ -108,8 +106,7 @@
 
 
 
-//
-return;
+
 $.fn[pluginName] = function ( options ) {
     var args = arguments;
 

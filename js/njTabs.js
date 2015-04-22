@@ -429,14 +429,4 @@ $.fn.njTabs = function( options ) {
 			}
 		});
 	}
-
-
-	 
-
-
-
-	 
-
-
-
 };
