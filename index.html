@@ -68,9 +68,8 @@
 </head>
 <body>
 	<ul class="njTabs" 
-		data-njt-content="#njTabs-content"
-		data-njt-anim="scale"
 		id="tabs1"
+		data-njt-content="#njTabs-content"
 	>
 		<li><a>tab <span>1</span></a></li>
 		<li><a>tab <span>2</span></a></li>
@@ -111,12 +110,16 @@
 	<script>
 		
 		$(function() {
-			setTimeout(function(){
-				$('#tabs1').append('<li><a>tab <span>4</span></a></li>');
-				$('#njTabs-content').append('<div>tab4</div>');
-				// $('#tabs1').njTabs();
-				njTabs({tabs:$('#tabs1')});
-			}, 1000)
+			// setTimeout(function(){
+			// 	$('#tabs1').append('<li><a>tab <span>4</span></a></li>');
+			// 	$('#njTabs-content').append('<div>tab4</div>');
+			// 	// $('#tabs1').njTabs();
+			// 	njTabs({tabs:$('#tabs1')});
+			// }, 1000)
+
+			$('#tabs1').njTabs();
+
+			
 		});
 	</script>
 </body>

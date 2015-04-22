@@ -22,7 +22,6 @@ window.njTabs = function(opts) {
 	}
 
 	this.init(opts);
-	this.show(true);
 	return this;
 };
 
@@ -85,6 +84,8 @@ proto.init = function (opts) {
 			e.preventDefault()
 		}
 	})
+
+	this.show(true);
 };
 
 proto.show = function (elem) {
@@ -330,6 +331,7 @@ proto._gatherData = function (el) {
 
 	this.o = $.extend(this.o, dataMeta);
 }
+
 proto._getMaxTransitionDuration = function (el) {
 	var el = $(el),
 	    str,
@@ -351,6 +353,7 @@ proto._getMaxTransitionDuration = function (el) {
 njTabs.defaults = {
 	tabs:                   '.njTabs',//(selector) default tabs wrapper selector
 	content:                '',//(selector) wrapper of content divs
+
 	tabSelector:            'a',//(selector) default tabs selector
 	presentation:           'li',//(selector) closest element for adding active class (for ul>li>a structure)
 
@@ -371,22 +374,30 @@ njTabs.defaults = {
 })(window, document);
 
 //autobind
-$(document).on('DOMContentLoaded', function () {
-	setTimeout(function(){
-		$(njTabs.defaults.tabs).each(function () {
-			njTabs({
-				tabs: $(this)
-			})
-		})
-	}, 50)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
-})
+// $(document).on('DOMContentLoaded', function () {
+// 	setTimeout(function(){
+// 		$(njTabs.defaults.tabs).each(function () {
+// 			njTabs({
+// 				tabs: $(this)
+// 			})
+// 		})
+// 	}, 50)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
+// })
 
 
 
 //jQuery, j plugin
 $.fn.njTabs = function( options ) {
-	if(!arguments.length) {
-		return this[0].njTabs;
+	var args = arguments;
+
+	if(!args.length) {//if we have no arguments at all
+		if(this[0].njTabs) {//if tabs inited on this element, return instance
+			return this[0].njTabs;
+		} else {//if tabs not inited on this element, try to init(maybe we have data attributes)
+			var opts = $.extend({}, options);
+			opts.tabs = $(this);
+			njTabs(options);
+		}
 	} else {
 		return this.each(function () {
 			if(typeof options === 'object') {
