@@ -31,7 +31,7 @@
 }
 
 
-
+-если плагин уже инициализирован, его нельзя повторно инициализировать
 -можно изменить default settings
 -instance добавляется к dom element-у tabsWrapper
 -no-tab

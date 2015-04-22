@@ -70,6 +70,7 @@
 	<ul class="njTabs" 
 		id="tabs1"
 		data-njt-content="#njTabs-content"
+		data-njt-anim="slideIn"
 	>
 		<li><a href="#tab3">tab <span>1</span></a></li>
 		<li><a href="#tab1">tab <span>2</span></a></li>
@@ -117,13 +118,7 @@
 			// 	njTabs({tabs:$('#tabs1')});
 			// }, 1000)
 
-			var t = njTabs();
-
-			
-			var t2 = $('#tabs1').njTabs('destroy');
-			
-
-			
+			var t = new njTabs({anim:'scale'});
 		});
 	</script>
 </body>

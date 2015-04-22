@@ -46,7 +46,9 @@ proto._init = function (opts) {
 		tabs: $(o.tabs).first()
 	};
 
-	if(!this.v.tabs.length) return;
+	if(this.v.tabs[0].njTabs) return;//we can't initialize 2 times
+
+	if(!this.v.tabs.length) return;//smth goes wrong, we have no tabs wrapper
 	
 	//gather option from data-attributes of tabs element
 	this._gatherData(this.v.tabs);
@@ -371,15 +373,15 @@ njTabs.defaults = {
 })(window, document);
 
 //autobind
-// $(document).on('DOMContentLoaded', function () {
-// 	setTimeout(function(){
-// 		$(njTabs.defaults.tabs).each(function () {
-// 			njTabs({
-// 				tabs: $(this)
-// 			})
-// 		})
-// 	}, 50)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
-// })
+$(document).on('DOMContentLoaded', function () {
+	setTimeout(function(){
+		$(njTabs.defaults.tabs).each(function () {
+			njTabs({
+				tabs: $(this)
+			})
+		})
+	}, 50)//set minimal timeout for purpose, if user will set handler to events with using DOMContentLoaded
+})
 
 
 
