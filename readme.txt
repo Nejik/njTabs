@@ -1,6 +1,6 @@
 njTabs - это jQuery/j library плагин, реализующий функционал табов на сайте.
 
-Демо - <a href="http://nejik.github.io/njTabs/">
+Демо - http://nejik.github.io/njTabs/
 
 Из особенностей можно упомянуть:
 
